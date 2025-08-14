@@ -47,9 +47,10 @@
     darwinConfigurations."colton" = nix-darwin.lib.darwinSystem {
       modules = [
         ./modules/shell/zsh.nix
-        ./modules/apps/dev.nix
         ./modules/apps/communication.nix
-        
+        ./modules/apps/dev.nix
+        ./modules/apps/utils.nix
+
         configuration
       ];
     };
