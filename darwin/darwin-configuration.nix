@@ -33,7 +33,14 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   users.users.megrxu = {
-        name = "megrxu";
-        home = "/Users/megrxu";
+    name = "megrxu";
+    home = "/Users/megrxu";
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+
+    users."megrxu" = import ./home.nix;
   };
 }

@@ -30,7 +30,6 @@
     shellAliases = {
       ls = "exa";
       ll = "exa -l";
-      update = "darwin-rebuild switch --flake ~/Repo/megrxu/nix-configs/darwin";
     };
 
     initContent = ''
@@ -38,6 +37,18 @@
     prompt pure
 
     zstyle ':prompt:pure:prompt:*' color cyan
+
+    # 用于进入 Rust 开发环境的函数
+    use-rust() {
+      echo "Entering Rust development environment... (type 'exit' to leave)"
+      nix shell ~/.local/state/nix/profiles/rust-dev
+    }
+
+    # 用于进入 Go 开发环境的函数
+    use-go() {
+      echo "Entering Go development environment... (type 'exit' to leave)"
+      nix shell ~/.local/state/nix/profiles/go-dev
+    };
     '';
   };
 
