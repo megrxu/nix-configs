@@ -16,9 +16,16 @@
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#simple
     darwinConfigurations."colton" = nix-darwin.lib.darwinSystem {
+
+      specialArgs = { inherit self inputs; }; 
+
       modules = [
         ./darwin-configuration.nix
-        home-manager.darwinModules.home-manager
+        home-manager.darwinModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users."megrxu" = import ./home.nix;
+        }
       ];
     };
   };

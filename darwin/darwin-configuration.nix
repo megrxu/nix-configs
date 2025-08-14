@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ self, pkgs, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -16,14 +16,13 @@
 
   # Set Git commit hash for darwin-version.
   system.configurationRevision = self.rev or self.dirtyRev or null;
-  
+
   # fonts
   fonts.packages = with pkgs; [
     inter
     redhat-official-fonts
   ];
 
-  home-manager.users.megrxu = import ./home.nix;
   home-manager.extraSpecialArgs = { inherit pkgs; };
 
   # Used for backwards compatibility, please read the changelog before changing.
@@ -32,4 +31,9 @@
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
+
+  users.users.megrxu = {
+        name = "megrxu";
+        home = "/Users/megrxu";
+  };
 }

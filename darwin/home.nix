@@ -1,25 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  home.username = "megrxu";
-  home.homeDirectory = "/Users/megrxu";
-
   home.packages = with pkgs; [
+    pure-prompt
+    eza
     htop
     ripgrep-all
-    eza
     git
     nali
     rsync
     vim
-
     vscode
-
-    telegram-desktop
   ];
-
-#   home.file.".config/starship.toml".source = ./config/starship.toml;
-  home.file.".zshrc".source = ./config/zshrc;
 
   programs.git = {
     enable = true;
@@ -33,18 +25,21 @@
 
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
+    autosuggestion.enable = true;
     enableCompletion = true;
     shellAliases = {
-      ll = "ls -l";
-      update = "nix-darwin switch --flake ~/Repo/megrxu/nix-configs/darwin";
+      ls = "exa";
+      ll = "exa -l";
+      update = "darwin-rebuild switch --flake ~/Repo/megrxu/nix-configs/darwin";
     };
-    # 在 .zshrc 的末尾添加自定义脚本
-    initExtra = ''
+
+    initContent = ''
+    promptinit
+    prompt pure
+
+    zstyle ':prompt:pure:prompt:*' color cyan
     '';
   };
-
-#   programs.starship.enable = true;
 
   home.stateVersion = "25.05";
 }
