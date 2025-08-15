@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     pure-prompt
+    zsh-history-substring-search
     eza
     htop
     ripgrep-all
@@ -38,17 +39,27 @@
 
     zstyle ':prompt:pure:prompt:*' color cyan
 
+    # Other Plugins
+    source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
     # 用于进入 Rust 开发环境的函数
     use-rust() {
-      echo "Entering Rust development environment... (type 'exit' to leave)"
+      echo "🦀 Rust development environment loaded."
       nix shell ~/.local/state/nix/profiles/rust-dev
     }
 
     # 用于进入 Go 开发环境的函数
     use-go() {
-      echo "Entering Go development environment... (type 'exit' to leave)"
+      echo "🐹 Go development environment loaded."
       nix shell ~/.local/state/nix/profiles/go-dev
     };
+
+    # 用于进入 Python 开发环境的函数
+    use-python() {
+      echo "🐍 Python development environment loaded."
+      nix shell ~/.local/state/nix/profiles/python-dev
+    };
+
     '';
   };
 

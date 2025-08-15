@@ -1,37 +1,38 @@
 # flake.nix (for a Rust project)
 {
-  description = "A Rust development environment";
+  description = "A flake for a Rust development environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            # Rust 工具链
-            cargo
-            rustc
+  outputs = { self, nixpkgs }:
+    let
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgsFor = system: import nixpkgs {
+        inherit system;
+      };
+    in
+    {
+      packages = forAllSystems (system:
+        let
+          pkgs = pkgsFor system;
+          rust-dev-env = pkgs.buildEnv {
+            name = "rust-dev";
+            paths = with pkgs; [
+              rustup
 
-            # IDE 支持和代码质量工具
-            rust-analyzer
-            clippy
-            rustfmt
-
-            openssl
-            pkg-config
-          ];
-
+              openssl
+              pkg-config
+            ];
+          };
           shellHook = ''
             echo "🦀 Rust development environment loaded."
           '';
-        };
-      }
-    );
+        in
+        {
+          default = rust-dev-env;
+        });
+    };
 }

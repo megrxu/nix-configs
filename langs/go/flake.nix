@@ -1,34 +1,37 @@
-# flake.nix (for a Go project)
+# flake.nix
 {
-  description = "A Go development environment";
+  description = "A flake for a Go development environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            # Go 工具链
-            go
-
-            # IDE 支持和调试工具
-            gopls # Go Language Server
-            delve # Go Debugger
-          ];
-
+  outputs = { self, nixpkgs }:
+    let
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgsFor = system: import nixpkgs {
+        inherit system;
+      };
+    in
+    {
+      packages = forAllSystems (system:
+        let
+          pkgs = pkgsFor system;
+          go-dev-env = pkgs.buildEnv {
+            name = "go-dev";
+            paths = with pkgs; [
+              go
+              gopls
+              delve
+            ];
+          };
           shellHook = ''
             echo "🐹 Go development environment loaded."
-
-            # export CGO_ENABLED=1
           '';
-        };
-      }
-    );
+        in
+        {
+          default = go-dev-env;
+        });
+    };
 }
